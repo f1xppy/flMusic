@@ -1,0 +1,48 @@
+version: "2.10.2"
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: .\mysql\data
+  postgresql-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: .\postgresql\data
+    
+services:
+  mysql:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - /mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: flmusic
+      MYSQL_USER: flmusic
+      MYSQL_PASSWORD: flmusic
+      MYSQL_DATABASE: flmusic
+  
+  memcached:
+    container_name: some-memcached
+    image: memcached:latest
+    ports:
+    - "11211:11211"
+
+  postgresql:
+    image: postgres:latest
+    volumes:
+      - /postgresql-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: flmusic
+      POSTGRES_USER: flmusic
+      POSTGRES_DB: flmusic
+      PGDATA: /var/lib/postgresql/data/db-files/
+    
+    
